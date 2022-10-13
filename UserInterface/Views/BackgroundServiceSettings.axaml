@@ -4,20 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.BackgroundServiceSettings">
-  <StackPanel Margin="30">
-    <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left">
-      <ContentControl FontSize="18" FontWeight="Bold">Background service</ContentControl>
-      <TextBlock IsVisible="{Binding IsRunning}" Foreground="Green" Text="{Binding Message}"></TextBlock >
-      <TextBlock IsVisible="{Binding !IsRunning}" Foreground="Red" Text="{Binding Message}"></TextBlock >
-      <TextBlock TextWrapping="Wrap" IsVisible="{Binding !IsRunning}" Text="The UI will crash after a while if the service wasn't started first. Please make sure the service is running. If you used the installer and you are seeing this message, please check if your antivirus might be interfering. "></TextBlock >
-    </StackPanel>
-    <StackPanel HorizontalAlignment="Stretch">
-      <ContentControl FontSize="14" FontWeight="Bold">Autostart</ContentControl>
-      <TextBlock IsVisible="{Binding IsAutoStartEnabled}" Foreground="Green" Text="Autostart is enabled"></TextBlock >
-      <TextBlock IsVisible="{Binding !IsAutoStartEnabled}" Foreground="Red" Text="Autostart is NOT enabled"></TextBlock >
+    <StackPanel Margin="30">
+        <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left">
+            <ContentControl FontSize="18" FontWeight="Bold">Background service</ContentControl>
+            <TextBlock IsVisible="{Binding IsRunning}" Foreground="Green" Text="{Binding Message}" />
+            <TextBlock IsVisible="{Binding !IsRunning}" Foreground="Red" Text="{Binding Message}" />
+            <TextBlock TextWrapping="Wrap" IsVisible="{Binding !IsRunning}"
+                       Text="The UI will crash after a while if the service wasn't started first. Please make sure the service is running. If you used the installer and you are seeing this message, please check if your antivirus might be interfering. " />
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Stretch">
+            <ContentControl FontSize="14" FontWeight="Bold">Autostart</ContentControl>
+            <TextBlock IsVisible="{Binding IsAutoStartEnabled}" Foreground="Green" Text="Autostart is enabled" />
+            <TextBlock IsVisible="{Binding !IsAutoStartEnabled}" Foreground="Red" Text="Autostart is NOT enabled" />
 
-      <Button IsVisible="{Binding !IsAutoStartEnabled}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="EnableAutostart">Enable</Button>
-      <Button IsVisible="{Binding IsAutoStartEnabled}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="DisableAutostart">Disable</Button>
+            <Button IsVisible="{Binding !IsAutoStartEnabled}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10"
+                    Click="EnableAutostart">
+                Enable
+            </Button>
+            <Button IsVisible="{Binding IsAutoStartEnabled}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10"
+                    Click="DisableAutostart">
+                Disable
+            </Button>
+        </StackPanel>
     </StackPanel>
-  </StackPanel>
 </UserControl>

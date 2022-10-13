@@ -1,14 +1,12 @@
-﻿using hass_workstation_service.Communication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using hass_workstation_service.Communication;
 
 namespace hass_workstation_service.Domain.Commands
 {
-    public class VolumeUpCommand : KeyCommand
-    {
-        public VolumeUpCommand(MqttPublisher publisher, string name = "VolumeUp", Guid id = default(Guid)) : base(publisher, KeyCommand.VK_VOLUME_UP, name ?? "VolumeUp", id) { }
-    }
+	public class VolumeUpCommand : KeyCommand
+	{
+		public VolumeUpCommand(MqttPublisher publisher, string name = "VolumeUp", Guid id = default) : base(publisher,
+			VK_VOLUME_UP, name ?? "VolumeUp", id) {
+		}
+	}
 }

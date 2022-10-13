@@ -1,64 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using hass_workstation_service.Communication;
 using LibreHardwareMonitor.Hardware;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    public class GpuTemperatureSensor : AbstractSensor
-    {
-        private Computer _computer;
-        private IHardware _gpu;
-        public GpuTemperatureSensor(MqttPublisher publisher, int? updateInterval = null, string name = "GPUTemperature", Guid id = default(Guid)) : base(publisher, name ?? "GPUTemperature", updateInterval ?? 10, id)
-        {
-            _computer = new Computer
-            {
-                IsCpuEnabled = false,
-                IsGpuEnabled = true,
-                IsMemoryEnabled = false,
-                IsMotherboardEnabled = false,
-                IsControllerEnabled = false,
-                IsNetworkEnabled = false,
-                IsStorageEnabled = false,
-            };
+	public class GpuTemperatureSensor : AbstractSensor
+	{
+		private readonly Computer _computer;
+		private readonly IHardware _gpu;
 
-            _computer.Open();
-            this._gpu = _computer.Hardware.FirstOrDefault(h => h.HardwareType == HardwareType.GpuAmd || h.HardwareType == HardwareType.GpuNvidia);
-        }
+		public GpuTemperatureSensor(MqttPublisher publisher, int? updateInterval = null, string name = "GPUTemperature",
+			Guid id = default) : base(publisher, name ?? "GPUTemperature", updateInterval ?? 10, id) {
+			_computer = new Computer {
+				IsCpuEnabled = false,
+				IsGpuEnabled = true,
+				IsMemoryEnabled = false,
+				IsMotherboardEnabled = false,
+				IsControllerEnabled = false,
+				IsNetworkEnabled = false,
+				IsStorageEnabled = false
+			};
 
-        public override DiscoveryConfigModel GetAutoDiscoveryConfig()
-        {
-            return this._autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new SensorDiscoveryConfigModel()
-            {
-                Name = this.Name,
-                NamePrefix = Publisher.NamePrefix,
-                Unique_id = this.Id.ToString(),
-                Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, this.ObjectId)}/state",
-                Device_class = "temperature",
-                Unit_of_measurement = "°C",
-                Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
-            });
-        }
+			_computer.Open();
+			_gpu = _computer.Hardware.FirstOrDefault(h =>
+				h.HardwareType == HardwareType.GpuAmd || h.HardwareType == HardwareType.GpuNvidia);
+		}
 
-        public override string GetState()
-        {
-            if (_gpu == null)
-            {
-                return "NotSupported";
-            }
-            _gpu.Update();
-            var sensor = _gpu.Sensors.FirstOrDefault(s => s.SensorType == SensorType.Temperature);
-            if (sensor == null)
-            {
-                return "NotSupported";
-            }
-            
-            return sensor.Value.HasValue ? sensor.Value.Value.ToString("#.##", CultureInfo.InvariantCulture) : "Unknown";
-        }
-    }
+		public override DiscoveryConfigModel GetAutoDiscoveryConfig() {
+			return _autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new SensorDiscoveryConfigModel {
+				Name = Name,
+				NamePrefix = Publisher.NamePrefix,
+				Unique_id = Id.ToString(),
+				Device = Publisher.DeviceConfigModel,
+				State_topic =
+					$"homeassistant/{Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, ObjectId)}/state",
+				Device_class = "temperature",
+				Unit_of_measurement = "°C",
+				Availability_topic = $"homeassistant/{Domain}/{Publisher.DeviceConfigModel.Name}/availability"
+			});
+		}
+
+		public override string GetState() {
+			if (_gpu == null) return "NotSupported";
+			_gpu.Update();
+			var sensor = _gpu.Sensors.FirstOrDefault(s => s.SensorType == SensorType.Temperature);
+			if (sensor == null) return "NotSupported";
+
+			return sensor.Value.HasValue
+				? sensor.Value.Value.ToString("#.##", CultureInfo.InvariantCulture)
+				: "Unknown";
+		}
+	}
 }

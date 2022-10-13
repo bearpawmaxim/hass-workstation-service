@@ -1,48 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <StartupObject>UserInterface.Program</StartupObject>
-  </PropertyGroup>
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Assets\hass-workstation-logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.8" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.8" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.8" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.8" />
-    <PackageReference Include="Avalonia.Win32" Version="0.10.8" />
-    <PackageReference Include="JKang.IpcServiceFramework.Client.NamedPipe" Version="3.1.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\hass-workstation-service\hass-workstation-service.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Views\AddCommandDialog.axaml.cs">
-      <DependentUpon>AddCommandDialog.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\AppInfo.axaml.cs">
-      <DependentUpon>AppInfo.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\BackgroundServiceSettings.axaml.cs">
-      <DependentUpon>BackgroundServiceSettings.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\GeneralSettings.axaml.cs">
-      <DependentUpon>GeneralSettings.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\CommandSettings.axaml.cs">
-      <DependentUpon>CommandSettings.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SensorSettings.axaml.cs">
-      <DependentUpon>SensorSettings.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\BrokerSettings.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <StartupObject>UserInterface.Program</StartupObject>
+    </PropertyGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="Assets\hass-workstation-logo.ico"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="0.10.8"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.8"/>
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.8"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.8"/>
+        <PackageReference Include="Avalonia.Win32" Version="0.10.8"/>
+        <PackageReference Include="JKang.IpcServiceFramework.Client.NamedPipe" Version="3.1.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\hass-workstation-service\hass-workstation-service.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Views\AddCommandDialog.axaml.cs">
+            <DependentUpon>AddCommandDialog.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\AppInfo.axaml.cs">
+            <DependentUpon>AppInfo.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\BackgroundServiceSettings.axaml.cs">
+            <DependentUpon>BackgroundServiceSettings.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\GeneralSettings.axaml.cs">
+            <DependentUpon>GeneralSettings.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\CommandSettings.axaml.cs">
+            <DependentUpon>CommandSettings.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\SensorSettings.axaml.cs">
+            <DependentUpon>SensorSettings.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\BrokerSettings.axaml.cs">
+            <DependentUpon>%(Filename)</DependentUpon>
+        </Compile>
+    </ItemGroup>
 </Project>

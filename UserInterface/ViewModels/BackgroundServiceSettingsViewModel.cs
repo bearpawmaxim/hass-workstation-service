@@ -1,33 +1,35 @@
-﻿using hass_workstation_service.Communication.InterProcesCommunication.Models;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ReactiveUI;
 
 namespace UserInterface.ViewModels
 {
-    public class BackgroundServiceSettingsViewModel : ViewModelBase
-    {
-        private string message;
-        private bool isRunning;
-        private bool isAutostartEnabled;
+	public class BackgroundServiceSettingsViewModel : ViewModelBase
+	{
+		private bool isAutostartEnabled;
+		private bool isRunning;
+		private string message;
 
-        public bool IsAutoStartEnabled { 
-            get => isAutostartEnabled; 
-            private set => this.RaiseAndSetIfChanged(ref isAutostartEnabled, value); }
-        public bool IsRunning { get => isRunning; private set => this.RaiseAndSetIfChanged(ref isRunning, value); }
-        public string Message { get => message; private set => this.RaiseAndSetIfChanged(ref message, value); }
+		public bool IsAutoStartEnabled {
+			get => isAutostartEnabled;
+			private set => this.RaiseAndSetIfChanged(ref isAutostartEnabled, value);
+		}
 
-        public void UpdateStatus(bool isRunning, string message)
-        {
-            this.IsRunning = isRunning;
-            this.Message = message;
-        }
+		public bool IsRunning {
+			get => isRunning;
+			private set => this.RaiseAndSetIfChanged(ref isRunning, value);
+		}
 
-        public void UpdateAutostartStatus(bool isEnabled)
-        {
-            this.IsAutoStartEnabled = isEnabled;
-        }
+		public string Message {
+			get => message;
+			private set => this.RaiseAndSetIfChanged(ref message, value);
+		}
 
-    }
+		public void UpdateStatus(bool isRunning, string message) {
+			IsRunning = isRunning;
+			Message = message;
+		}
+
+		public void UpdateAutostartStatus(bool isEnabled) {
+			IsAutoStartEnabled = isEnabled;
+		}
+	}
 }

@@ -4,23 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.AppInfo">
-  <StackPanel Margin="30">
-    <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left">
-      <ContentControl FontSize="18" FontWeight="Bold" >Info</ContentControl>
-      <TextBlock Text="{Binding ServiceVersion}" Margin="0 0 0 20"></TextBlock >
-      <TextBlock Text="Need some help?" Margin="0 0 0 20"></TextBlock >
-      <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
-        <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="GitHub">GitHub</Button>
-        <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="Discord">Discord</Button>
-      </StackPanel>
-      <TextBlock Margin="0 0 0 20">
-Having issues? Check out the log files. 
-Using the configuration files is recommended 
-for advanced users only.</TextBlock >
-      <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
-        <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="OpenLogDirectory">Log files</Button>
-        <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="OpenConfigDirectory">Config files</Button>
-      </StackPanel>
+    <StackPanel Margin="30">
+        <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left">
+            <ContentControl FontSize="18" FontWeight="Bold">Info</ContentControl>
+            <TextBlock Text="{Binding ServiceVersion}" Margin="0 0 0 20" />
+            <TextBlock Text="Need some help?" Margin="0 0 0 20" />
+            <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
+                <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="GitHub">GitHub</Button>
+                <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="Discord">Discord</Button>
+            </StackPanel>
+            <TextBlock Margin="0 0 0 20">
+                Having issues? Check out the log files.
+                Using the configuration files is recommended
+                for advanced users only.
+            </TextBlock>
+            <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
+                <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="OpenLogDirectory">Log files</Button>
+                <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="OpenConfigDirectory">Config files</Button>
+            </StackPanel>
+        </StackPanel>
     </StackPanel>
-  </StackPanel>
 </UserControl>

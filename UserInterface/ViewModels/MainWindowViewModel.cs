@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace UserInterface.ViewModels
+﻿namespace UserInterface.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
-    {
-        public string Greeting => "Welcome to Avalonia!";
-    }
+	public class MainWindowViewModel : ViewModelBase
+	{
+		public string Greeting => "Welcome to Avalonia!";
+	}
 }

@@ -1,22 +1,19 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using MangaReader.Avalonia.Platform.Win;
 
 namespace UserInterface.Views
 {
-    public class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
+	public class MainWindow : Window
+	{
+		public MainWindow() {
+			InitializeComponent();
 
-            _ = new WindowsTrayIcon();
-        }
+			_ = new WindowsTrayIcon();
+		}
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-    }
+		private void InitializeComponent() {
+			AvaloniaXamlLoader.Load(this);
+		}
+	}
 }

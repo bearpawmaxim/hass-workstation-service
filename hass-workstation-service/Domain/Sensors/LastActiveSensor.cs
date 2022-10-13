@@ -1,72 +1,67 @@
-﻿using hass_workstation_service.Communication;
-using System;
+﻿using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using hass_workstation_service.Communication;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    public class LastActiveSensor : AbstractSensor
-    {
-        private DateTime _lastActive = DateTime.MinValue;
-        public LastActiveSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "LastActive", Guid id = default) : base(publisher, name ?? "LastActive", updateInterval ?? 10, id){}
+	public class LastActiveSensor : AbstractSensor
+	{
+		private DateTime _lastActive = DateTime.MinValue;
 
-        public override SensorDiscoveryConfigModel GetAutoDiscoveryConfig()
-        {
-            return this._autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new SensorDiscoveryConfigModel()
-            {
-                Name = this.Name,
-                NamePrefix = Publisher.NamePrefix,
-                Unique_id = this.Id.ToString(),
-                Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, this.ObjectId)}/state",
-                Icon = "mdi:clock-time-three-outline",
-                Device_class = "timestamp"
-            });
-        }
+		public LastActiveSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "LastActive",
+			Guid id = default) : base(publisher, name ?? "LastActive", updateInterval ?? 10, id) {
+		}
 
-        public override string GetState()
-        {
-            var lastInput = GetLastInputTime();
-            if ((_lastActive - lastInput).Duration().TotalSeconds > 1)
-            {
-                _lastActive = lastInput;
-            }
-            return _lastActive.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
-        }
-        
+		public override SensorDiscoveryConfigModel GetAutoDiscoveryConfig() {
+			return _autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new SensorDiscoveryConfigModel {
+				Name = Name,
+				NamePrefix = Publisher.NamePrefix,
+				Unique_id = Id.ToString(),
+				Device = Publisher.DeviceConfigModel,
+				State_topic =
+					$"homeassistant/{Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, ObjectId)}/state",
+				Icon = "mdi:clock-time-three-outline",
+				Device_class = "timestamp"
+			});
+		}
 
-        static DateTime GetLastInputTime()
-        {
-            int idleTime = 0;
-            LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
-            lastInputInfo.cbSize = Marshal.SizeOf(lastInputInfo);
-            lastInputInfo.dwTime = 0;
-
-            int envTicks = Environment.TickCount;
-
-            if (GetLastInputInfo(ref lastInputInfo))
-            {
-                int lastInputTick = Convert.ToInt32(lastInputInfo.dwTime);
-
-                idleTime = envTicks - lastInputTick;
-            }
+		public override string GetState() {
+			var lastInput = GetLastInputTime();
+			if ((_lastActive - lastInput).Duration().TotalSeconds > 1) _lastActive = lastInput;
+			return _lastActive.ToString("o", CultureInfo.InvariantCulture);
+		}
 
 
-            return idleTime > 0 ? DateTime.Now - TimeSpan.FromMilliseconds(idleTime) : DateTime.Now;
-        }
+		private static DateTime GetLastInputTime() {
+			var idleTime = 0;
+			var lastInputInfo = new LASTINPUTINFO();
+			lastInputInfo.cbSize = Marshal.SizeOf(lastInputInfo);
+			lastInputInfo.dwTime = 0;
+
+			var envTicks = Environment.TickCount;
+
+			if (GetLastInputInfo(ref lastInputInfo)) {
+				var lastInputTick = Convert.ToInt32(lastInputInfo.dwTime);
+
+				idleTime = envTicks - lastInputTick;
+			}
 
 
-        [DllImport("User32.dll")]
-        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+			return idleTime > 0 ? DateTime.Now - TimeSpan.FromMilliseconds(idleTime) : DateTime.Now;
+		}
 
-        [StructLayout(LayoutKind.Sequential)]
-        struct LASTINPUTINFO
-        {
-            public static readonly int SizeOf = Marshal.SizeOf(typeof(LASTINPUTINFO));
 
-            [MarshalAs(UnmanagedType.U4)]
-            public int cbSize;
-            [MarshalAs(UnmanagedType.U4)]
-            public UInt32 dwTime;
-        }
-    }
+		[DllImport("User32.dll")]
+		private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct LASTINPUTINFO
+		{
+			public static readonly int SizeOf = Marshal.SizeOf(typeof(LASTINPUTINFO));
+
+			[MarshalAs(UnmanagedType.U4)] public int cbSize;
+			[MarshalAs(UnmanagedType.U4)] public uint dwTime;
+		}
+	}
 }

@@ -1,80 +1,80 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dotnet-hass_workstation_service-C65C2EBE-1977-4C24-AC6B-6921877E1390</UserSecretsId>
-    <RootNamespace>hass_workstation_service</RootNamespace>
-    <OutputType>WinExe</OutputType>
-    <Authors>Sleevezipper</Authors>
-    <RepositoryUrl>https://github.com/sleevezipper/hass-workstation-service</RepositoryUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.0.0.*</AssemblyVersion>
-    <Deterministic>false</Deterministic>
-    <ApplicationIcon>hass-workstation-logo.ico</ApplicationIcon>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <UserSecretsId>dotnet-hass_workstation_service-C65C2EBE-1977-4C24-AC6B-6921877E1390</UserSecretsId>
+        <RootNamespace>hass_workstation_service</RootNamespace>
+        <OutputType>WinExe</OutputType>
+        <Authors>Sleevezipper</Authors>
+        <RepositoryUrl>https://github.com/sleevezipper/hass-workstation-service</RepositoryUrl>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <AssemblyVersion>1.0.0.*</AssemblyVersion>
+        <Deterministic>false</Deterministic>
+        <ApplicationIcon>hass-workstation-logo.ico</ApplicationIcon>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DocumentationFile></DocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="appsettings.json" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Remove="appsettings.json"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="hass-workstation-service.exe" />
-    <None Remove="hass-workstation-service.pdb" />
-    <None Remove="libHarfBuzzSharp.dll" />
-    <None Remove="libSkiaSharp.dll" />
-    <None Remove="UserInterface.exe" />
-    <None Remove="UserInterface.pdb" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="hass-workstation-service.exe"/>
+        <None Remove="hass-workstation-service.pdb"/>
+        <None Remove="libHarfBuzzSharp.dll"/>
+        <None Remove="libSkiaSharp.dll"/>
+        <None Remove="UserInterface.exe"/>
+        <None Remove="UserInterface.pdb"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="libHarfBuzzSharp.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libSkiaSharp.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="UserInterface.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="UserInterface.pdb">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="libHarfBuzzSharp.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="libSkiaSharp.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="UserInterface.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="UserInterface.pdb">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="appsettings.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="appsettings.json">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JKang.IpcServiceFramework.Hosting.NamedPipe" Version="3.1.0" />
-    <PackageReference Include="LibreHardwareMonitorLib" Version="0.8.9" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="MQTTnet" Version="3.1.1" />
-    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.1" />
-    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="System.Management" Version="6.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="JKang.IpcServiceFramework.Hosting.NamedPipe" Version="3.1.0"/>
+        <PackageReference Include="LibreHardwareMonitorLib" Version="0.8.9"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0"/>
+        <PackageReference Include="MQTTnet" Version="3.1.1"/>
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.1"/>
+        <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
+        <PackageReference Include="System.Management" Version="6.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="CoreAudio">
-      <HintPath>..\lib\CoreAudio.dll</HintPath>
-    </Reference>
-    <!--<Reference Include="libHarfBuzzSharp.dll">
-      <HintPath>..\lib\libHarfBuzzSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="libSkiaSharp.dll">
-      <HintPath>..\lib\libSkiaSharp.dll</HintPath>
-    </Reference>-->
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="CoreAudio">
+            <HintPath>..\lib\CoreAudio.dll</HintPath>
+        </Reference>
+        <!--<Reference Include="libHarfBuzzSharp.dll">
+          <HintPath>..\lib\libHarfBuzzSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="libSkiaSharp.dll">
+          <HintPath>..\lib\libSkiaSharp.dll</HintPath>
+        </Reference>-->
+    </ItemGroup>
 </Project>
