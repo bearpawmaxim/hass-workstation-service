@@ -149,6 +149,10 @@ namespace hass_workstation_service.Data
 						sensor = new GpuLoadSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name,
 							configuredSensor.Id);
 						break;
+					case "ScreenshotSensor":
+						sensor = new ScreenshotSensor(publisher, configuredSensor.Name,
+							configuredSensor.UpdateInterval);
+						break;
 					// keep this one last!
 					case "WMIQuerySensor":
 						sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval,

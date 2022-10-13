@@ -140,6 +140,13 @@ namespace hass_workstation_service.Communication
         public string Value_template { get; set; }
 	}
 
+	public class CameraDiscoveryConfigModel : SensorDiscoveryConfigModel
+	{
+		public string Image_encoding { get; set; }
+		public string Encoding { get; set; }
+		public string Topic { get; set; }
+	}
+	
 	public class CommandDiscoveryConfigModel : DiscoveryConfigModel
 	{
         /// <summary>

@@ -7,8 +7,9 @@ namespace hass_workstation_service.Domain.Sensors
 {
 	public class ActiveWindowSensor : AbstractSensor
 	{
-		public ActiveWindowSensor(MqttPublisher publisher, int? updateInterval = null, string name = "ActiveWindow",
-			Guid id = default) : base(publisher, name ?? "ActiveWindow", updateInterval ?? 10, id) {
+		public ActiveWindowSensor(MqttPublisher publisher, int? updateInterval = null,
+			string name = "ActiveWindow", Guid id = default)
+			: base(publisher, name ?? "ActiveWindow", updateInterval ?? 10, id) {
 		}
 
 		public override SensorDiscoveryConfigModel GetAutoDiscoveryConfig() {
@@ -17,8 +18,8 @@ namespace hass_workstation_service.Domain.Sensors
 				NamePrefix = Publisher.NamePrefix,
 				Unique_id = Id.ToString(),
 				Device = Publisher.DeviceConfigModel,
-				State_topic =
-					$"homeassistant/{Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, ObjectId)}/state",
+				State_topic = $"homeassistant/{Domain}/{Publisher.DeviceConfigModel.Name}/" +
+				              $"{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, ObjectId)}/state",
 				Icon = "mdi:window-maximize",
 				Availability_topic = $"homeassistant/{Domain}/{Publisher.DeviceConfigModel.Name}/availability"
 			});
@@ -28,19 +29,23 @@ namespace hass_workstation_service.Domain.Sensors
 			return GetActiveWindowTitle();
 		}
 
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		private static extern IntPtr GetForegroundWindow();
 
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
-		private string GetActiveWindowTitle() {
-			const int nChars = 256;
-			var Buff = new StringBuilder(nChars);
-			var handle = GetForegroundWindow();
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern int GetWindowTextLength(IntPtr hWnd);
 
-			if (GetWindowText(handle, Buff, nChars) > 0) return Buff.ToString();
-			return null;
+		private string GetActiveWindowTitle() {
+			var strTitle = string.Empty;
+			var handle = GetForegroundWindow();
+			var intLength = GetWindowTextLength(handle) + 1;
+			var stringBuilder = new StringBuilder(intLength);
+			if (GetWindowText(handle, stringBuilder, intLength) > 0) strTitle = stringBuilder.ToString();
+
+			return strTitle;
 		}
 	}
 }
