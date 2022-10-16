@@ -26,28 +26,31 @@ namespace hass_workstation_service.Data
 		private const string SENSORS_SETTINGS_FILENAME = "configured-sensors.json";
 		private const string COMMANDS_SETTINGS_FILENAME = "configured-commands.json";
 		private const string GENERAL_SETTINGS_FILENAME = "general-settings.json";
+		private static readonly JsonSerializerOptions _serializerOptions =  new() {
+			WriteIndented = true
+		};
 		private readonly DeviceConfigModel _deviceConfigModel;
-
-		private readonly string path =
+		private readonly string _path =
 			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
 				"Hass Workstation Service");
 
 		public ConfigurationService(DeviceConfigModel deviceConfigModel) {
 			_deviceConfigModel = deviceConfigModel;
-			if (!File.Exists(Path.Combine(path, MQTT_SETTINGS_FILENAME)))
-				File.Create(Path.Combine(path, MQTT_SETTINGS_FILENAME)).Close();
 
-			if (!File.Exists(Path.Combine(path, SENSORS_SETTINGS_FILENAME)))
-				File.Create(Path.Combine(path, SENSORS_SETTINGS_FILENAME)).Close();
-
-			if (!File.Exists(Path.Combine(path, COMMANDS_SETTINGS_FILENAME)))
-				File.Create(Path.Combine(path, COMMANDS_SETTINGS_FILENAME)).Close();
-			if (!File.Exists(Path.Combine(path, GENERAL_SETTINGS_FILENAME)))
-				File.Create(Path.Combine(path, GENERAL_SETTINGS_FILENAME)).Close();
+			CreateFileIfNotExists(MQTT_SETTINGS_FILENAME);
+			CreateFileIfNotExists(SENSORS_SETTINGS_FILENAME);
+			CreateFileIfNotExists(COMMANDS_SETTINGS_FILENAME);
+			CreateFileIfNotExists(GENERAL_SETTINGS_FILENAME);
 
 			ConfiguredSensors = new List<AbstractSensor>();
 			ConfiguredCommands = new List<AbstractCommand>();
 			ReadGeneralSettings();
+
+			void CreateFileIfNotExists(string fileName) {
+				if (!File.Exists(Path.Combine(_path, fileName))) {
+					File.Create(Path.Combine(_path, fileName)).Close();
+				}
+			}
 		}
 
 		private bool BrokerSettingsFileLocked { get; set; }
@@ -66,7 +69,7 @@ namespace hass_workstation_service.Data
 			while (SensorsSettingsFileLocked) await Task.Delay(500);
 			SensorsSettingsFileLocked = true;
 			var sensors = new List<ConfiguredSensor>();
-			using (var stream = new FileStream(Path.Combine(path, SENSORS_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, SENSORS_SETTINGS_FILENAME), FileMode.Open)) {
 				Log.Logger.Information($"reading configured sensors from: {stream.Name}");
 				if (stream.Length > 0) sensors = await JsonSerializer.DeserializeAsync<List<ConfiguredSensor>>(stream);
 				stream.Close();
@@ -172,10 +175,11 @@ namespace hass_workstation_service.Data
 			while (CommandSettingsFileLocked) await Task.Delay(500);
 			CommandSettingsFileLocked = true;
 			var commands = new List<ConfiguredCommand>();
-			using (var stream = new FileStream(Path.Combine(path, COMMANDS_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, COMMANDS_SETTINGS_FILENAME), FileMode.Open)) {
 				Log.Logger.Information($"reading configured commands from: {stream.Name}");
-				if (stream.Length > 0)
+				if (stream.Length > 0) {
 					commands = await JsonSerializer.DeserializeAsync<List<ConfiguredCommand>>(stream);
+				}
 				stream.Close();
 				CommandSettingsFileLocked = false;
 			}
@@ -234,7 +238,7 @@ namespace hass_workstation_service.Data
 			while (GeneralSettingsFileLocked) await Task.Delay(500);
 			GeneralSettingsFileLocked = true;
 			var settings = new GeneralSettings();
-			using (var stream = new FileStream(Path.Combine(path, GENERAL_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, GENERAL_SETTINGS_FILENAME), FileMode.Open)) {
 				Log.Logger.Information($"reading general settings from: {stream.Name}");
 				if (stream.Length > 0) settings = await JsonSerializer.DeserializeAsync<GeneralSettings>(stream);
 				stream.Close();
@@ -251,12 +255,11 @@ namespace hass_workstation_service.Data
         public async void WriteGeneralSettingsAsync(GeneralSettings settings) {
 			while (GeneralSettingsFileLocked) await Task.Delay(500);
 			GeneralSettingsFileLocked = true;
-			using (var stream = new FileStream(Path.Combine(path, GENERAL_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, GENERAL_SETTINGS_FILENAME), FileMode.Open)) {
 				stream.SetLength(0);
 				Log.Logger.Information($"writing general settings to: {stream.Name}");
 
-
-				await JsonSerializer.SerializeAsync(stream, settings);
+				await JsonSerializer.SerializeAsync(stream, settings, _serializerOptions);
 				stream.Close();
 			}
 
@@ -287,16 +290,16 @@ namespace hass_workstation_service.Data
 					.WithCredentials(configuredBroker.Username, configuredBroker.Password)
 					.WithKeepAlivePeriod(TimeSpan.FromSeconds(30));
 
-
 				/* Start LWT  */
 				var lwtMessage = new MqttApplicationMessageBuilder()
 					.WithTopic($"homeassistant/sensor/{_deviceConfigModel.Name}/availability")
 					.WithPayload("offline");
-				if (configuredBroker.RetainLWT) lwtMessage.WithRetainFlag();
+				if (configuredBroker.RetainLWT) {
+					lwtMessage.WithRetainFlag();
+				}
 
 				mqttClientOptionsBuilder.WithWillMessage(lwtMessage.Build());
 				/* End LWT */
-
 
 				/* Start TLS/Certificate configuration */
 
@@ -308,17 +311,21 @@ namespace hass_workstation_service.Data
 
 				var certs = new List<X509Certificate>();
 
-				if (!string.IsNullOrEmpty(configuredBroker.RootCAPath))
+				if (!string.IsNullOrEmpty(configuredBroker.RootCAPath)) {
 					certs.Add(new X509Certificate2(configuredBroker.RootCAPath));
+				}
 
-				if (!string.IsNullOrEmpty(configuredBroker.ClientCertPath))
+				if (!string.IsNullOrEmpty(configuredBroker.ClientCertPath)) {
 					certs.Add(new X509Certificate2(configuredBroker.ClientCertPath));
-				if (certs.Count > 0) // IF certs are configured, let's add them here
+				}
+
+				if (certs.Count > 0) {
+					// IF certs are configured, let's add them here
 					tlsParameters.Certificates = certs;
+				}
 				mqttClientOptionsBuilder.WithTls(tlsParameters);
 
 				/* End TLS/Certificate Configuration */
-
 
 				var mqttClientOptions = mqttClientOptionsBuilder.Build();
 				return new ManagedMqttClientOptionsBuilder().WithClientOptions(mqttClientOptions).Build();
@@ -332,7 +339,7 @@ namespace hass_workstation_service.Data
 			while (SensorsSettingsFileLocked) await Task.Delay(500);
 			SensorsSettingsFileLocked = true;
 			var configuredSensorsToSave = new List<ConfiguredSensor>();
-			using (var stream = new FileStream(Path.Combine(path, SENSORS_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, SENSORS_SETTINGS_FILENAME), FileMode.Open)) {
 				stream.SetLength(0);
 				Log.Logger.Information($"writing configured sensors to: {stream.Name}");
 				foreach (var sensor in ConfiguredSensors)
@@ -350,15 +357,14 @@ namespace hass_workstation_service.Data
 							Type = namedWindowSensor.GetType().Name, UpdateInterval = namedWindowSensor.UpdateInterval,
 							WindowName = namedWindowSensor.WindowName
 						});
-					}
-					else {
+					} else {
 						configuredSensorsToSave.Add(new ConfiguredSensor {
 							Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name,
 							UpdateInterval = sensor.UpdateInterval
 						});
 					}
 
-				await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);
+				await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave, _serializerOptions);
 				stream.Close();
 			}
 
@@ -369,23 +375,25 @@ namespace hass_workstation_service.Data
 			while (CommandSettingsFileLocked) await Task.Delay(500);
 			CommandSettingsFileLocked = true;
 			var configuredCommandsToSave = new List<ConfiguredCommand>();
-			using (var stream = new FileStream(Path.Combine(path, COMMANDS_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, COMMANDS_SETTINGS_FILENAME), FileMode.Open)) {
 				stream.SetLength(0);
 				Log.Logger.Information($"writing configured commands to: {stream.Name}");
 				foreach (var command in ConfiguredCommands) {
-					if (command is CustomCommand customCommand)
+					if (command is CustomCommand customCommand) {
 						configuredCommandsToSave.Add(new ConfiguredCommand {
 							Id = customCommand.Id, Name = customCommand.Name, Type = customCommand.GetType().Name,
 							Command = customCommand.Command
 						});
-					if (command is KeyCommand customKeyCommand)
+					}
+					if (command is KeyCommand customKeyCommand) {
 						configuredCommandsToSave.Add(new ConfiguredCommand {
 							Id = customKeyCommand.Id, Name = customKeyCommand.Name,
 							Type = customKeyCommand.GetType().Name, KeyCode = customKeyCommand.KeyCode
 						});
+					}
 				}
 
-				await JsonSerializer.SerializeAsync(stream, configuredCommandsToSave);
+				await JsonSerializer.SerializeAsync(stream, configuredCommandsToSave, _serializerOptions);
 				stream.Close();
 			}
 
@@ -447,7 +455,7 @@ namespace hass_workstation_service.Data
         public async void WriteMqttBrokerSettingsAsync(MqttSettings settings) {
 			while (BrokerSettingsFileLocked) await Task.Delay(500);
 			BrokerSettingsFileLocked = true;
-			using (var stream = new FileStream(Path.Combine(path, MQTT_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, MQTT_SETTINGS_FILENAME), FileMode.Open)) {
 				stream.SetLength(0);
 				Log.Logger.Information($"writing configured mqttbroker to: {stream.Name}");
 
@@ -462,7 +470,7 @@ namespace hass_workstation_service.Data
 					ClientCertPath = settings.ClientCertPath
 				};
 
-				await JsonSerializer.SerializeAsync(stream, configuredBroker);
+				await JsonSerializer.SerializeAsync(stream, configuredBroker, _serializerOptions);
 				stream.Close();
 			}
 
@@ -503,14 +511,14 @@ namespace hass_workstation_service.Data
 				string startPath;
 				// if the app is installed in appdata, we can assume it was installed using the installer
 				if (Environment.CurrentDirectory.Contains(
-					    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)))
+					    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData))) {
 					// so we set the autostart Path to launch shortcut
 					startPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs) +
 					            @"\Sleevezipper\Hass Workstation Service.appref-ms";
-				else
+				} else {
 					// if it isn't in appdata, it's probably running as standalone and we set the startpath to the path of the executable
 					startPath = Environment.CurrentDirectory + @"\hass-workstation-service.exe";
-
+				}
 
 				rkApp.SetValue("hass-workstation-service", startPath);
 				rkApp.Close();
@@ -542,7 +550,7 @@ namespace hass_workstation_service.Data
 			while (BrokerSettingsFileLocked) await Task.Delay(500);
 			BrokerSettingsFileLocked = true;
 			ConfiguredMqttBroker configuredBroker = null;
-			using (var stream = new FileStream(Path.Combine(path, MQTT_SETTINGS_FILENAME), FileMode.Open)) {
+			using (var stream = new FileStream(Path.Combine(_path, MQTT_SETTINGS_FILENAME), FileMode.Open)) {
 				Log.Logger.Information($"reading configured mqttbroker from: {stream.Name}");
 				if (stream.Length > 0)
 					configuredBroker = await JsonSerializer.DeserializeAsync<ConfiguredMqttBroker>(stream);

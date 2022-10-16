@@ -33,7 +33,6 @@ namespace UserInterface.Views
 			_basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
 				"Hass Workstation Service");
 
-
 			DataContext = new InfoViewModel();
 			UpdateVersion();
 		}
@@ -48,7 +47,7 @@ namespace UserInterface.Views
 		}
 
 		public void GitHub(object sender, RoutedEventArgs args) {
-			BrowserUtil.OpenBrowser("https://github.com/sleevezipper/hass-workstation-service");
+			BrowserUtil.OpenBrowser("https://github.com/bearpawmaxim/hass-workstation-service");
 		}
 
 		public void Discord(object sender, RoutedEventArgs args) {

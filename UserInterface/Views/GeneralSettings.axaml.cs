@@ -29,7 +29,6 @@ namespace UserInterface.Views
 			// create client
 			client = clientFactory.CreateClient("general");
 
-
 			DataContext = new GeneralSettingsViewModel();
 			GetSettings();
 		}
@@ -39,7 +38,7 @@ namespace UserInterface.Views
 			ICollection<ValidationResult> results;
 			if (model.IsValid(model, out results)) {
 				var result = client.InvokeAsync(x =>
-					x.WriteGeneralSettings(new GeneralSettings {NamePrefix = model.NamePrefix}));
+					x.WriteGeneralSettings(new GeneralSettings { NamePrefix = model.NamePrefix }));
 			}
 		}
 
