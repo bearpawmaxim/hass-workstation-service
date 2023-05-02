@@ -11,5 +11,6 @@ namespace hass_workstation_service.Data
 		public string Scope { get; set; }
 		public int? UpdateInterval { get; set; }
 		public string WindowName { get; set; }
+		public decimal ScaleFactor { get; set; }
 	}
 }

@@ -31,12 +31,18 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
 			Enum.TryParse(sensor.GetType().Name, out AvailableSensors type);
 			Type = type;
 			Value = sensor.PreviousPublishedState;
-			if (sensor is WMIQuerySensor wMIQuerySensor) {
-				Query = wMIQuerySensor.Query;
-				Scope = wMIQuerySensor.Scope;
+			switch (sensor) {
+				case WMIQuerySensor wMIQuerySensor:
+					Query = wMIQuerySensor.Query;
+					Scope = wMIQuerySensor.Scope;
+					break;
+				case ScreenshotSensor screenshotSensor:
+					ScaleFactor = screenshotSensor.ScaleFactor;
+					break;
+				case NamedWindowSensor namedWindowSensor:
+					WindowName = namedWindowSensor.WindowName;
+					break;
 			}
-
-			if (sensor is NamedWindowSensor namedWindowSensor) WindowName = namedWindowSensor.WindowName;
 			UpdateInterval = sensor.UpdateInterval;
 			UnitOfMeasurement = ((SensorDiscoveryConfigModel) sensor.GetAutoDiscoveryConfig()).Unit_of_measurement;
 		}
@@ -53,6 +59,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
 		public string WindowName { get; set; }
 		public int UpdateInterval { get; set; }
 		public string UnitOfMeasurement { get; set; }
+		public decimal ScaleFactor { get; set; }
 	}
 
 	public class ConfiguredCommandModel

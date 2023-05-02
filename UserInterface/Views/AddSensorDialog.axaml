@@ -40,6 +40,13 @@
         </TextBlock>
         <TextBox IsVisible="{Binding ShowWindowNameInput}" Text="{Binding WindowName}" Watermark="Visual Studio Code"
                  HorizontalAlignment="Left" MinWidth="300" />
+        <TextBlock IsVisible="{Binding ShowScaleFactorInput}" Margin="0 0 0 10" >
+            Screenshot scale factor.
+        </TextBlock>
+        <ContentControl IsVisible="{Binding ShowScaleFactorInput}" Margin="0 20 0 5">Scale factor</ContentControl>
+        <NumericUpDown IsVisible="{Binding ShowScaleFactorInput}" Increment="0.1" Maximum="1.0"
+                       Minimum="0.0" HorizontalAlignment="Left" MinWidth="300" Value="{Binding ScaleFactor}" />
+        <TextBlock IsVisible="{Binding ShowScaleFactorInput}" Text="{Binding ScaleFactorHelp}" />
         <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Save">Save</Button>
     </StackPanel>
 </Window>

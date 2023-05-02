@@ -55,5 +55,8 @@ namespace MangaReader.Avalonia.Platform.Win.Interop
         /// <returns>bool</returns>
         [DllImport(User32, SetLastError = true)]
 		public static extern bool DestroyWindow(IntPtr hWnd);
+
+        [DllImport(User32, CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern int GetSystemMetrics(int nIndex);
 	}
 }

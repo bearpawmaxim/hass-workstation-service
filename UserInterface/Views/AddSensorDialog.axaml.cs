@@ -66,7 +66,7 @@ namespace UserInterface.Views
 			item.Query = sensor.Query;
 			item.Scope = sensor.Scope;
 			item.WindowName = sensor.WindowName;
-
+			item.ScaleFactor = sensor.ScaleFactor;
 			Title = $"Edit {sensor.Name}";
 		}
 
@@ -88,6 +88,7 @@ namespace UserInterface.Views
 
 		private void FillDefaultValues() {
 			var item = (AddSensorViewModel) DataContext;
+			item.ShowScaleFactorInput = false;
 			switch (ComboBox.SelectedItem) {
 				case AvailableSensors.UserNotificationStateSensor:
 					item.Description =
@@ -258,6 +259,14 @@ namespace UserInterface.Views
 						"https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#gpuloadsensor";
 					item.ShowQueryInput = false;
 					item.ShowWindowNameInput = false;
+					item.UpdateInterval = 5;
+					break;
+
+				case AvailableSensors.ScreenshotSensor:
+					item.Description = "This sensor returns a display screenshot.";
+					item.ShowQueryInput = false;
+					item.ShowWindowNameInput = false;
+					item.ShowScaleFactorInput = true;
 					item.UpdateInterval = 5;
 					break;
 

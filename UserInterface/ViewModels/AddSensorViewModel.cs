@@ -1,10 +1,14 @@
-﻿using hass_workstation_service.Communication.InterProcesCommunication.Models;
+﻿using System;
+using hass_workstation_service.Communication.InterProcesCommunication.Models;
+using MangaReader.Avalonia.Platform.Win.Interop;
 using ReactiveUI;
 
 namespace UserInterface.ViewModels
 {
 	public class AddSensorViewModel : ViewModelBase
 	{
+		private readonly int _screenWidth;
+		private readonly int _screenHeight;
 		private string _description;
 		private string _moreInfoLink;
 		private string _name;
@@ -15,6 +19,13 @@ namespace UserInterface.ViewModels
 		private bool _showWindowNameInput;
 		private int _updateInterval;
 		private string _windowName;
+		private bool _showScaleFactorInput;
+		private decimal _scaleFactor;
+
+		public AddSensorViewModel() {
+			_screenWidth = WinApi.GetSystemMetrics(0);
+			_screenHeight = WinApi.GetSystemMetrics(1);
+		}
 
 		public AvailableSensors SelectedType {
 			get => _selectedType;
@@ -46,6 +57,11 @@ namespace UserInterface.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _showWindowNameInput, value);
 		}
 
+		public bool ShowScaleFactorInput {
+			get => _showScaleFactorInput;
+			set => this.RaiseAndSetIfChanged(ref _showScaleFactorInput, value);
+		}
+
 		public string MoreInfoLink {
 			get => _moreInfoLink;
 			set => this.RaiseAndSetIfChanged(ref _moreInfoLink, value);
@@ -64,6 +80,23 @@ namespace UserInterface.ViewModels
 		public string WindowName {
 			get => _windowName;
 			set => this.RaiseAndSetIfChanged(ref _windowName, value);
+		}
+
+		public decimal ScaleFactor {
+			get => _scaleFactor;
+			set {
+				this.RaiseAndSetIfChanged(ref _scaleFactor, value);
+				this.RaisePropertyChanged(nameof(ScaleFactorHelp));
+			}
+		}
+
+		public string ScaleFactorHelp {
+			get {
+				int scaledWidth = (int)(_screenWidth * ScaleFactor);
+				int scaledHeight = (int)(_screenHeight * ScaleFactor);
+				return
+					$"Original: {_screenWidth}x{_screenHeight}{Environment.NewLine}Scaled: {scaledWidth}x{scaledHeight}";
+			}
 		}
 	}
 }
